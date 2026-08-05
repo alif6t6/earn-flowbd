@@ -25,49 +25,37 @@ export const fetchApi = async (url: string, options: RequestInit = {}) => {
 
   // If network failed completely or response is missing, check fallback
   if (networkFailed || !response) {
-    try {
-      return await handleClientApiFallback(targetUrl, options, token);
-    } catch (fallbackErr) {
-      throw fallbackErr;
-    }
+    return handleClientApiFallback(targetUrl, options, token);
   }
 
-  const contentType = response.headers.get('content-type') || '';
-  
+  const text = await response.text();
+  const trimmed = text.trim();
+  const lowerTrimmed = trimmed.toLowerCase();
+
+  // If static hosting (like Netlify or Vercel) returned index.html for unhandled /api route or 404/502
+  if (
+    lowerTrimmed.startsWith('<!doctype') ||
+    lowerTrimmed.startsWith('<html') ||
+    lowerTrimmed.startsWith('<') ||
+    response.status === 404 ||
+    response.status === 502
+  ) {
+    return handleClientApiFallback(targetUrl, options, token);
+  }
+
   let data: any = null;
-
-  if (contentType.includes('application/json')) {
-    data = await response.json().catch(() => null);
-  } else {
-    const text = await response.text();
-    const trimmed = text.trim();
-    
-    // If static hosting (like Netlify) returned index.html for the /api route or 404 HTML
-    if (trimmed.startsWith('<!doctype') || trimmed.startsWith('<html') || trimmed.startsWith('<') || response.status === 404) {
-      try {
-        return await handleClientApiFallback(targetUrl, options, token);
-      } catch (fallbackErr) {
-        throw fallbackErr;
-      }
-    }
-
+  try {
+    data = JSON.parse(text);
+  } catch {
+    // If JSON parsing fails (e.g. invalid json returned by server), attempt client fallback or wrap text
     try {
-      data = JSON.parse(text);
+      return await handleClientApiFallback(targetUrl, options, token);
     } catch {
       data = { text };
     }
   }
 
   if (!response.ok) {
-    // If backend 404 or 500 on static host
-    if (response.status === 404 || response.status === 502) {
-      try {
-        return await handleClientApiFallback(targetUrl, options, token);
-      } catch (fallbackErr) {
-        throw fallbackErr;
-      }
-    }
-
     const errorMsg = (data && typeof data === 'object' && data.error) 
       ? data.error 
       : `HTTP ${response.status} ${response.statusText}`;
@@ -76,6 +64,7 @@ export const fetchApi = async (url: string, options: RequestInit = {}) => {
 
   return data;
 };
+
 
 
 

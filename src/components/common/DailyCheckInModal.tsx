@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Gift, Check, Lock, Sparkles, X, Clock, Flame, CalendarDays } from 'lucide-react';
+import { fetchApi } from '../../lib/api';
 
 interface DailyCheckInModalProps {
   isOpen: boolean;
@@ -36,18 +37,9 @@ export default function DailyCheckInModal({
     if (claiming || !checkInInfo.canClaim) return;
     setClaiming(true);
     try {
-      const response = await fetch('/api/user/daily-checkin/claim', {
+      const data = await fetchApi('/api/user/daily-checkin/claim', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
       });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to claim daily reward');
-      }
 
       onClaimSuccess(data);
       onClose();

@@ -347,7 +347,7 @@ export async function handleClientApiFallback(targetUrl: string, options: Reques
     };
   }
 
-  if (cleanUrl === '/api/user/daily-checkin' && method === 'POST') {
+  if ((cleanUrl === '/api/user/daily-checkin' || cleanUrl === '/api/user/daily-checkin/claim') && method === 'POST') {
     const currentUser = await getCurrentUser();
     const reward = 5.00;
     const newBal = (parseFloat(currentUser.balance || '0') + reward).toFixed(2);
