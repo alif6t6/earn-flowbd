@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="240" viewBox="0 0 660 240">
+  <defs>
+    <linearGradient id="ef-green" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#16A34A"/>
+      <stop offset="100%" stop-color="#4ADE80"/>
+    </linearGradient>
+  </defs>
+
+  <!-- icon badge -->
+  <rect x="20" y="40" width="160" height="160" rx="36" fill="#131313"/>
+  <rect x="56" y="122" width="20" height="40" rx="10" fill="url(#ef-green)"/>
+  <rect x="90" y="100" width="20" height="62" rx="10" fill="url(#ef-green)"/>
+  <rect x="124" y="78" width="20" height="84" rx="10" fill="url(#ef-green)"/>
+
+  <!-- wordmark -->
+  <text x="216" y="152" font-family="Poppins" font-weight="700" font-size="88" fill="#131313">Earn<tspan fill="url(#ef-green)">Flow</tspan></text>
+</svg>

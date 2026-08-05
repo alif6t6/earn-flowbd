@@ -1,0 +1,8 @@
+{
+  "name": "Copy of Remix Earn Flow",
+  "description": "Micro Job \u0026 Reward Website",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

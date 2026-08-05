@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+.ad-container, [class*="ad-container"] {
+  padding: 0 !important;
+  margin: 0 auto !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+div:has(> .ad-container) {
+  padding: 0 !important;
+  margin: 0 auto !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  min-height: 0 !important;
+}
+
+/* Force child elements of ad-container to fit */
+.ad-container img, 
+.ad-container video {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  border-radius: inherit !important;
+}
