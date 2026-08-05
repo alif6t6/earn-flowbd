@@ -87,6 +87,9 @@ export default function Login() {
       });
       
       localStorage.setItem('token', data.token);
+      if (data.user) {
+        localStorage.setItem('earnflow_current_user', JSON.stringify(data.user));
+      }
       
       if (data.isAdmin) {
         navigate('/admin');
