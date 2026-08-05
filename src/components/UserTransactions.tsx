@@ -11,8 +11,8 @@ export default function UserTransactions() {
   useEffect(() => {
     fetchApi('/api/user/profile').then(setProfile).catch(console.error);
     fetchApi('/api/user/transactions')
-      .then(setTransactions)
-      .catch(console.error)
+      .then(res => setTransactions(Array.isArray(res) ? res : []))
+      .catch(() => setTransactions([]))
       .finally(() => setLoading(false));
   }, []);
 

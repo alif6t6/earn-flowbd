@@ -11,8 +11,8 @@ export default function UserWithdrawHistory() {
   useEffect(() => {
     fetchApi('/api/user/profile').then(setProfile).catch(console.error);
     fetchApi('/api/user/withdrawals')
-      .then(setWithdrawals)
-      .catch(console.error)
+      .then(res => setWithdrawals(Array.isArray(res) ? res : []))
+      .catch(() => setWithdrawals([]))
       .finally(() => setLoading(false));
   }, []);
 

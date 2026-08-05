@@ -112,10 +112,10 @@ export default function AdminReferrals() {
               </h3>
 
               <div className="space-y-2">
-                {data?.topReferrers?.length === 0 ? (
+                {!Array.isArray(data?.topReferrers) || data.topReferrers.length === 0 ? (
                   <p className="text-xs text-slate-400 py-4 text-center">No referral records logged yet.</p>
                 ) : (
-                  data?.topReferrers?.map((ref: any, idx: number) => (
+                  data.topReferrers.map((ref: any, idx: number) => (
                     <div key={idx} className="p-3 bg-slate-50 rounded-2xl flex items-center justify-between text-xs font-semibold">
                       <div className="flex items-center gap-3">
                         <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-800 font-extrabold text-[10px] flex items-center justify-center">

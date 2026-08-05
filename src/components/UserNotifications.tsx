@@ -13,8 +13,11 @@ export default function UserNotifications() {
   useEffect(() => {
     fetchApi('/api/user/profile').then(setProfile).catch(console.error);
     fetchApi('/api/user/notifications')
-      .then(setNotifications)
-      .catch(err => addToast(err.message, 'error'))
+      .then(res => setNotifications(Array.isArray(res) ? res : []))
+      .catch(err => {
+        addToast(err.message, 'error');
+        setNotifications([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -35,7 +38,7 @@ export default function UserNotifications() {
             <p className="text-xs text-slate-500">System announcements, gift alerts, and reward updates</p>
           </div>
           <span className="px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-extrabold rounded-full border border-indigo-100">
-            {notifications.filter(n => !n.isRead).length} New
+            {(Array.isArray(notifications) ? notifications : []).filter(n => !n.isRead).length} New
           </span>
         </header>
 

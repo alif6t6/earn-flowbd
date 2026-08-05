@@ -23,7 +23,7 @@ export default function AdminReports() {
     }).finally(() => setLoading(false));
   }, []);
 
-  const totalPayouts = withdrawals
+  const totalPayouts = (Array.isArray(withdrawals) ? withdrawals : [])
     .filter(w => w.status === 'approved')
     .reduce((sum, w) => sum + parseFloat(w.amount || '0'), 0);
 

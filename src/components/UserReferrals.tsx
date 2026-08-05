@@ -107,11 +107,11 @@ export default function UserReferrals() {
         {/* Referred Users List */}
         <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-3">
           <h3 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider">Your Referred Members</h3>
-          {referralData?.referredUsers?.length === 0 ? (
+          {!Array.isArray(referralData?.referredUsers) || referralData.referredUsers.length === 0 ? (
             <p className="text-xs text-slate-400 py-4 text-center">No referred users yet. Share your code above!</p>
           ) : (
             <div className="space-y-2 max-h-60 overflow-y-auto">
-              {referralData?.referredUsers?.map((u: any) => (
+              {referralData.referredUsers.map((u: any) => (
                 <div key={u.id} className="p-3 bg-slate-50 rounded-xl flex items-center justify-between text-xs">
                   <div>
                     <p className="font-bold text-slate-900">@{u.username}</p>

@@ -115,7 +115,7 @@ export default function DailyCheckInModal({
           </div>
 
           <div className="grid grid-cols-4 gap-2.5 mb-6">
-            {checkInInfo.rewards.map((item) => {
+            {(Array.isArray(checkInInfo?.rewards) ? checkInInfo.rewards : []).map((item) => {
               const isClaimed = item.status === 'claimed';
               const isCurrent = item.status === 'current';
               

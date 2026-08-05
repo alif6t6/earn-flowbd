@@ -32,7 +32,7 @@ export default function UserPayments() {
               <h2 className="font-extrabold text-slate-900 text-sm flex items-center gap-2">
                 <Crown size={18} className="text-amber-500" /> Premium Membership Submissions
               </h2>
-              {payments.premiumPayments?.length === 0 ? (
+              {(!Array.isArray(payments?.premiumPayments) || payments.premiumPayments.length === 0) ? (
                 <div className="p-6 bg-white border border-slate-200/80 rounded-2xl text-xs text-slate-400 text-center">
                   No premium upgrade submissions found.
                 </div>

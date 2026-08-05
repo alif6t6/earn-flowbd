@@ -60,9 +60,10 @@ export default function AdminWithdrawals() {
   };
 
   const handleExportCSV = () => {
-    if (withdrawals.length === 0) return;
+    const list = Array.isArray(withdrawals) ? withdrawals : [];
+    if (list.length === 0) return;
     const headers = ['ID,User,Method,Account,Amount,Status,Date,Note\n'];
-    const rows = withdrawals.map(w => 
+    const rows = list.map(w => 
       `${w.id},${w.username},${w.method},${w.accountNumber},${w.amount},${w.status},${new Date(w.createdAt).toISOString()},"${w.note || ''}"`
     );
     const blob = new Blob([headers.concat(rows).join('\n')], { type: 'text/csv' });
