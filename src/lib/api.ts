@@ -1,3 +1,5 @@
+import { handleClientApiFallback } from './clientApiFallback';
+
 export const fetchApi = async (url: string, options: RequestInit = {}) => {
   const token = localStorage.getItem('token');
   const headers = new Headers(options.headers || {});
@@ -12,16 +14,21 @@ export const fetchApi = async (url: string, options: RequestInit = {}) => {
 
   const targetUrl = url.startsWith('/') ? url : `/${url}`;
 
-  let response: Response;
+  let response: Response | null = null;
+  let networkFailed = false;
+
   try {
     response = await fetch(targetUrl, { ...options, headers });
   } catch (err: any) {
-    // Retry once if network fetch fails (e.g. server restart / brief disconnect)
+    networkFailed = true;
+  }
+
+  // If network failed completely or response is missing, check fallback
+  if (networkFailed || !response) {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      response = await fetch(targetUrl, { ...options, headers });
-    } catch {
-      throw new Error('Network error or server unavailable. Please check your internet connection.');
+      return await handleClientApiFallback(targetUrl, options, token);
+    } catch (fallbackErr) {
+      throw fallbackErr;
     }
   }
 
@@ -34,9 +41,16 @@ export const fetchApi = async (url: string, options: RequestInit = {}) => {
   } else {
     const text = await response.text();
     const trimmed = text.trim();
-    if (trimmed.startsWith('<!doctype') || trimmed.startsWith('<html') || trimmed.startsWith('<')) {
-      throw new Error(`Endpoint ${targetUrl} returned HTML instead of JSON (${response.status})`);
+    
+    // If static hosting (like Netlify) returned index.html for the /api route or 404 HTML
+    if (trimmed.startsWith('<!doctype') || trimmed.startsWith('<html') || trimmed.startsWith('<') || response.status === 404) {
+      try {
+        return await handleClientApiFallback(targetUrl, options, token);
+      } catch (fallbackErr) {
+        throw fallbackErr;
+      }
     }
+
     try {
       data = JSON.parse(text);
     } catch {
@@ -45,6 +59,15 @@ export const fetchApi = async (url: string, options: RequestInit = {}) => {
   }
 
   if (!response.ok) {
+    // If backend 404 or 500 on static host
+    if (response.status === 404 || response.status === 502) {
+      try {
+        return await handleClientApiFallback(targetUrl, options, token);
+      } catch (fallbackErr) {
+        throw fallbackErr;
+      }
+    }
+
     const errorMsg = (data && typeof data === 'object' && data.error) 
       ? data.error 
       : `HTTP ${response.status} ${response.statusText}`;
@@ -53,5 +76,6 @@ export const fetchApi = async (url: string, options: RequestInit = {}) => {
 
   return data;
 };
+
 
 
