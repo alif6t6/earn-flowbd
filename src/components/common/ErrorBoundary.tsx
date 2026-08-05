@@ -35,6 +35,14 @@ export default class ErrorBoundary extends React.Component<Props, State> {
     console.error('Unhandled React Error:', error, errorInfo);
   }
 
+  handleReset = () => {
+    try {
+      localStorage.removeItem('token');
+      localStorage.removeItem('earnflow_current_user');
+    } catch {}
+    window.location.href = '/';
+  };
+
   render() {
     if (this.state.hasError) {
       return (
@@ -43,16 +51,24 @@ export default class ErrorBoundary extends React.Component<Props, State> {
             <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">
               !
             </div>
-            <h2 className="text-lg font-extrabold text-slate-900">Something went wrong</h2>
+            <h2 className="text-lg font-extrabold text-slate-900">Application Error</h2>
             <p className="text-xs text-slate-500">
-              An unhandled error occurred in the application. Please refresh the page to continue.
+              {this.state.error?.message || 'An unhandled error occurred in the application.'}
             </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-6 py-2.5 bg-indigo-600 text-white font-bold text-xs rounded-xl shadow-sm hover:bg-indigo-700 transition-all"
-            >
-              Refresh Application
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 text-white font-bold text-xs rounded-xl shadow-sm hover:bg-indigo-700 transition-all"
+              >
+                Refresh Application
+              </button>
+              <button
+                onClick={this.handleReset}
+                className="w-full sm:w-auto px-5 py-2.5 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl shadow-sm hover:bg-slate-200 transition-all"
+              >
+                Reset & Login Again
+              </button>
+            </div>
           </div>
         </div>
       );

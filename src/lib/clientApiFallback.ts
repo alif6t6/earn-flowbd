@@ -292,11 +292,27 @@ export async function handleClientApiFallback(targetUrl: string, options: Reques
   }
 
   // -----------------------------------------------------------------
-  // 3. TASKS
+  // 3. TASKS & VIDEOS & ADS
   // -----------------------------------------------------------------
   if ((cleanUrl === '/api/tasks' || cleanUrl === '/api/user/tasks') && method === 'GET') {
     const tasksList = getLocalData(STORAGE_KEYS.TASKS, DEFAULT_TASKS);
-    return tasksList;
+    return Array.isArray(tasksList) ? tasksList : DEFAULT_TASKS;
+  }
+
+  if ((cleanUrl === '/api/videos' || cleanUrl === '/api/user/videos') && method === 'GET') {
+    const DEFAULT_VIDEOS = [
+      { id: 1, title: 'EarnFlow Intro Video', videoUrl: 'https://youtube.com', reward: '5.00', duration: 30, status: 'active' },
+      { id: 2, title: 'How to Earn Daily Rewards', videoUrl: 'https://youtube.com', reward: '10.00', duration: 60, status: 'active' }
+    ];
+    return getLocalData('earnflow_videos_db', DEFAULT_VIDEOS);
+  }
+
+  if ((cleanUrl === '/api/ads/active' || cleanUrl === '/api/ads') && method === 'GET') {
+    const DEFAULT_ADS = [
+      { id: 1, name: 'Welcome Banner', type: 'Welcome Ads', content: 'Welcome to EarnFlow!', status: 'active', location: 'dashboard', adRatio: 'horizontal' },
+      { id: 2, name: 'Promo Banner', type: 'Promo Ads', content: 'Earn 15% referral bonus!', status: 'active', location: 'dashboard', adRatio: 'horizontal' }
+    ];
+    return getLocalData('earnflow_ads_db', DEFAULT_ADS);
   }
 
   if (cleanUrl.startsWith('/api/user/tasks/') && cleanUrl.endsWith('/complete') && method === 'POST') {
@@ -452,6 +468,13 @@ export async function handleClientApiFallback(targetUrl: string, options: Reques
     };
   }
 
+  if (cleanUrl === '/api/user/transactions' || cleanUrl === '/api/transactions') {
+    return [
+      { id: 1, type: 'reward', amount: '20.00', description: 'Welcome Bonus', createdAt: new Date().toISOString() },
+      { id: 2, type: 'task', amount: '5.00', description: 'Task Completion Reward', createdAt: new Date().toISOString() }
+    ];
+  }
+
   // -----------------------------------------------------------------
   // 8. ADMIN ROUTES
   // -----------------------------------------------------------------
@@ -475,6 +498,27 @@ export async function handleClientApiFallback(targetUrl: string, options: Reques
         return newTask;
       }
       return getLocalData(STORAGE_KEYS.TASKS, DEFAULT_TASKS);
+    }
+    if (cleanUrl === '/api/admin/videos') {
+      return getLocalData('earnflow_videos_db', []);
+    }
+    if (cleanUrl === '/api/admin/ads') {
+      return getLocalData('earnflow_ads_db', []);
+    }
+    if (cleanUrl === '/api/admin/promos') {
+      return getLocalData('earnflow_promos_db', []);
+    }
+    if (cleanUrl === '/api/admin/notifications') {
+      return getLocalData('earnflow_notifications_db', []);
+    }
+    if (cleanUrl === '/api/admin/reports') {
+      return { totalUsers: 1, totalWithdrawals: 0, totalRevenue: 5000, activeTasks: 3 };
+    }
+    if (cleanUrl === '/api/admin/logs') {
+      return [];
+    }
+    if (cleanUrl === '/api/admin/payment-settings') {
+      return { bkash: '01800000000', nagad: '01800000000', rocket: '01800000000' };
     }
     if (cleanUrl === '/api/admin/withdrawals') {
       return getLocalData(STORAGE_KEYS.WITHDRAWALS, []);

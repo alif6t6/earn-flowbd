@@ -94,8 +94,8 @@ export default function UserTasks() {
         fetchApi('/api/videos'),
         getActiveAds()
       ]);
-      setTasks(tasksRes || []);
-      setVideos(videosRes || []);
+      setTasks(Array.isArray(tasksRes) ? tasksRes : []);
+      setVideos(Array.isArray(videosRes) ? videosRes : []);
       setAdsList(Array.isArray(adRes) ? adRes : []);
     } catch (err: any) {
       console.error(err);
