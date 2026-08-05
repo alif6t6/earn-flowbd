@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account information, balances, and system roles",
+      "type": "object",
+      "properties": {
+        "username": { "type": "string", "minLength": 3, "maxLength": 50 },
+        "phoneNumber": { "type": "string" },
+        "country": { "type": "string" },
+        "balance": { "type": "string" },
+        "todaysEarnings": { "type": "string" },
+        "totalEarnings": { "type": "string" },
+        "referralEarnings": { "type": "string" },
+        "pendingWithdraw": { "type": "string" },
+        "totalWithdraw": { "type": "string" },
+        "completedTasks": { "type": "number" },
+        "referralCode": { "type": "string" },
+        "referredBy": { "type": "string" },
+        "isPremium": { "type": "boolean" },
+        "isAdmin": { "type": "boolean" },
+        "status": { "type": "string" },
+        "dailyStreak": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["username"]
+    },
+    "Task": {
+      "title": "Task Item",
+      "description": "Tasks, videos, and click assignments for users",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "reward": { "type": "string" },
+        "type": { "type": "string" },
+        "link": { "type": "string" },
+        "isDaily": { "type": "boolean" },
+        "status": { "type": "string" }
+      },
+      "required": ["title", "reward"]
+    },
+    "Withdrawal": {
+      "title": "Withdrawal Request",
+      "description": "User cashout request entries",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "username": { "type": "string" },
+        "method": { "type": "string" },
+        "accountNumber": { "type": "string" },
+        "amount": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "amount", "method", "accountNumber"]
+    },
+    "Setting": {
+      "title": "App Settings",
+      "description": "Global settings for EarnFlow app",
+      "type": "object",
+      "properties": {
+        "minWithdrawal": { "type": "string" },
+        "dollarRate": { "type": "string" },
+        "perReferralBonus": { "type": "string" },
+        "noticeText": { "type": "string" },
+        "telegramLink": { "type": "string" },
+        "dailyCheckInBonus": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles collection"
+    },
+    "/tasks/{taskId}": {
+      "schema": { "$ref": "#/entities/Task" },
+      "description": "Earn tasks and videos collection"
+    },
+    "/withdrawals/{withdrawalId}": {
+      "schema": { "$ref": "#/entities/Withdrawal" },
+      "description": "Withdrawal submissions collection"
+    },
+    "/settings/{docId}": {
+      "schema": { "$ref": "#/entities/Setting" },
+      "description": "System settings collection"
+    }
+  }
+}
