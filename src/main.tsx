@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import './index.css';
+import './lib/firebase.ts';
 
 window.onerror = function (message, source, lineno, colno, error) {
   if (!message || message === 'Script error.' || message.toString().includes('Script error')) {
